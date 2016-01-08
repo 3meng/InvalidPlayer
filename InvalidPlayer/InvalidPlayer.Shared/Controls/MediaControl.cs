@@ -16,6 +16,8 @@ namespace InvalidPlayer.Controls
     [TemplatePart(Name = "MuteButton", Type = typeof(ToggleButton))]
     [TemplatePart(Name = "VolumeBar", Type = typeof(ProgressBar))]
     [TemplatePart(Name = "ScheduleBar", Type = typeof(ProgressBar))]
+    [TemplatePart(Name = "BufferBar", Type = typeof(ProgressBar))]
+    [TemplatePart(Name = "InfoButton", Type = typeof(ToggleButton))]
     public class MediaControl : YukiPopup
     {
         private const string PlayButtonName = "PlayButton";

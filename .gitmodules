@@ -6,3 +6,8 @@
 [submodule "SYEngine"]
 	path = SYEngine
 	url=https://github.com/amamiya/SYEngine.git
+	
+	
+[submodule "cppparsers"]
+	path = cppparsers
+	url = https://bitbucket.org/qife/cppparsers.git
