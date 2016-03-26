@@ -163,7 +163,7 @@ Global
 		SYEngine\SYEngine\SYEngine.Shared\SYEngine.Shared.vcxitems*{371b4e0d-44ec-4781-8350-55471e26c599}*SharedItemsImports = 4
 		SYEngine\MultipartStreamMatroska\MultipartStreamMatroska.Shared\MultipartStreamMatroska.Shared.vcxitems*{5589aedb-6143-4b48-a7a3-1dd0c73e5723}*SharedItemsImports = 9
 		SYEngine\MultipartStreamMatroska\MultipartStreamMatroska.Shared\MultipartStreamMatroska.Shared.vcxitems*{41c20a0f-50fc-4030-a647-2a5a13ebb562}*SharedItemsImports = 4
-		Demo\SYEngineRuntime\SYEngineRuntime.Shared\SYEngineRuntime.Shared.projitems*{b764c861-f87a-4084-a569-063986b05f0b}*SharedItemsImports = 4
+		SYEngine\Demo\SYEngineRuntime\SYEngineRuntime.Shared\SYEngineRuntime.Shared.projitems*{b764c861-f87a-4084-a569-063986b05f0b}*SharedItemsImports = 4
 		SYEngine\ffcodecs\ffcodecs.Shared\ffcodecs.Shared.vcxitems*{fb33c1e7-872f-46bc-a7b5-3317d9b93e74}*SharedItemsImports = 4
 		SYEngine\CoreMFSource\CoreMFSource.Shared\CoreMFSource.Shared.vcxitems*{891804b9-2f50-4a9a-b8b0-f2af397d4ae8}*SharedItemsImports = 4
 		SYEngine\CoreMFSource\CoreMFSource.Shared\CoreMFSource.Shared.vcxitems*{32326bd5-23d8-4993-a79f-46a819bcc794}*SharedItemsImports = 4
