@@ -39,7 +39,7 @@ namespace InvalidPlayerCore.Controls
         }
     }
 
-    public abstract class YukiPopup : Control
+    public abstract class YukiPopup : ContentControl
     {
         public event EventHandler<object> Closed;
 

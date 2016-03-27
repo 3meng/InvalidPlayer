@@ -15,6 +15,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\AboutControl.xaml.cs">
+      <DependentUpon>AboutControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\MediaControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\HostMatchVideoPlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\LocalVideoPlayer.cs" />
@@ -32,6 +35,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)View\PlayerInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\AboutControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Theme\Styles.xaml">
       <SubType>Designer</SubType>
     </Page>

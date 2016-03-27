@@ -9,6 +9,7 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using InvalidPlayer.Control;
 using InvalidPlayerCore.Container;
 using InvalidPlayerCore.Model;
 using InvalidPlayerCore.Parser;
@@ -170,6 +171,8 @@ namespace InvalidPlayer.View
 
         private void AboutBtn_OnClick(object sender, RoutedEventArgs e)
         {
+            AboutControl ctrl = new AboutControl();
+            ctrl.Show();
         }
 
         private async void LocalBtn_OnClick(object sender, RoutedEventArgs e)

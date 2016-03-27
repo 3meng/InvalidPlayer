@@ -30,6 +30,8 @@ namespace InvalidPlayer
             _appExceptionHandle = new AppExceptionHandle(this);
             Suspending += OnSuspending;
             Init();
+//            var msg = InvalidPlayerPlugin.Main.Init();
+//            System.Diagnostics.Debug.Assert(msg == "NoError");
         }
 
         public void Init()

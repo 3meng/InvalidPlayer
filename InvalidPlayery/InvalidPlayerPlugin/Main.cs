@@ -10,20 +10,14 @@ using System.Threading.Tasks;
 namespace InvalidPlayerPlugin
 {
     public class Main
-
     {
         private static JavaScriptSourceContext currentSourceContext = JavaScriptSourceContext.FromIntPtr(IntPtr.Zero);
         private static JavaScriptRuntime runtime;
+        private static JavaScriptContext context;
         private static Queue taskQueue = new Queue();
-
-        public Main()
+        
+        public static string Init()
         {
-        }
-
-        public string init()
-        {
-            JavaScriptContext context;
-
             if (Native.JsCreateRuntime(JavaScriptRuntimeAttributes.None, null, out runtime) != JavaScriptErrorCode.NoError)
                 return "failed to create runtime.";
 
@@ -51,19 +45,35 @@ namespace InvalidPlayerPlugin
             return "NoError";
         }
 
-            public void UsingWinrt() {
-                Native.JsProjectWinRTNamespace("InvalidPlayerCore");
-                Native.JsProjectWinRTNamespace("InvalidPlayerCore.Common");
-                Native.JsProjectWinRTNamespace("InvalidPlayerCore.Service");
+        public static string JsDispose()
+        {
+            if (Native.JsSetCurrentContext(JavaScriptContext.Invalid) != JavaScriptErrorCode.NoError)
+            {
+                return "failed to invalid current context";
+            }
+            if (Native.JsDisposeRuntime(runtime)!= JavaScriptErrorCode.NoError)
+            {
+                return "failed to dispose js runtime";
             }
 
-        public void UsingObject() {
+            return "NoError";
+        }
+
+        public void UsingWinrt()
+        {
+            Native.JsProjectWinRTNamespace("InvalidPlayerCore");
+            Native.JsProjectWinRTNamespace("InvalidPlayerCore.Common");
+            Native.JsProjectWinRTNamespace("InvalidPlayerCore.Service");
+        }
+
+        public void UsingObject()
+        {
             JavaScriptValue _globalObject;
             Native.ThrowIfError(Native.JsGetGlobalObject(out _globalObject));
             //_globalObject.SetProperty()
         }
 
-        JavaScriptValue CallJsFunction(string name, params JavaScriptValue[] parameters)
+        public JavaScriptValue CallJsFunction(string name, params JavaScriptValue[] parameters)
         {
             JavaScriptValue _globalObject;
             Native.ThrowIfError(Native.JsGetGlobalObject(out _globalObject));
@@ -71,64 +81,64 @@ namespace InvalidPlayerPlugin
             return function.CallFunction(parameters);
         }
 
-        public string runScript(string script)
+        public static string RunScript(string script)
+        {
+            IntPtr returnValue;
+            
+            try
             {
-                IntPtr returnValue;
+                JavaScriptValue result;
 
-                try
+                if (Native.JsRunScript(script, currentSourceContext++, "", out result) != JavaScriptErrorCode.NoError)
                 {
-                    JavaScriptValue result;
+                    // Get error message and clear exception
+                    JavaScriptValue exception;
+                    if (Native.JsGetAndClearException(out exception) != JavaScriptErrorCode.NoError)
+                        return "failed to get and clear exception";
 
-                    if (Native.JsRunScript(script, currentSourceContext++, "", out result) != JavaScriptErrorCode.NoError)
-                    {
-                        // Get error message and clear exception
-                        JavaScriptValue exception;
-                        if (Native.JsGetAndClearException(out exception) != JavaScriptErrorCode.NoError)
-                            return "failed to get and clear exception";
+                    JavaScriptPropertyId messageName;
+                    if (Native.JsGetPropertyIdFromName("message",
+                        out messageName) != JavaScriptErrorCode.NoError)
+                        return "failed to get error message id";
 
-                        JavaScriptPropertyId messageName;
-                        if (Native.JsGetPropertyIdFromName("message",
-                            out messageName) != JavaScriptErrorCode.NoError)
-                            return "failed to get error message id";
+                    JavaScriptValue messageValue;
+                    if (Native.JsGetProperty(exception, messageName, out messageValue)
+                        != JavaScriptErrorCode.NoError)
+                        return "failed to get error message";
 
-                        JavaScriptValue messageValue;
-                        if (Native.JsGetProperty(exception, messageName, out messageValue)
-                            != JavaScriptErrorCode.NoError)
-                            return "failed to get error message";
+                    IntPtr message;
+                    UIntPtr length;
+                    if (Native.JsStringToPointer(messageValue, out message, out length) != JavaScriptErrorCode.NoError)
+                        return "failed to convert error message";
 
-                        IntPtr message;
-                        UIntPtr length;
-                        if (Native.JsStringToPointer(messageValue, out message, out length) != JavaScriptErrorCode.NoError)
-                            return "failed to convert error message";
-
-                        return Marshal.PtrToStringUni(message);
-                    }
-
-                    // Execute promise tasks stored in taskQueue 
-                    while (taskQueue.Count != 0)
-                    {
-                        JavaScriptValue task = (JavaScriptValue)taskQueue.Dequeue();
-                        JavaScriptValue promiseResult;
-                        JavaScriptValue global;
-                        Native.JsGetGlobalObject(out global);
-                        JavaScriptValue[] args = new JavaScriptValue[1] { global };
-                        Native.JsCallFunction(task, args, 1, out promiseResult);
-                    }
-
-                    // Convert the return value.
-                    JavaScriptValue stringResult;
-                    UIntPtr stringLength;
-                    if (Native.JsConvertValueToString(result, out stringResult) != JavaScriptErrorCode.NoError)
-                        return "failed to convert value to string.";
-                    if (Native.JsStringToPointer(stringResult, out returnValue, out stringLength) != JavaScriptErrorCode.NoError)
-                        return "failed to convert return value.";
-                }
-                catch (Exception e)
-                {
-                    return "chakrahost: fatal error: internal error: " + e.Message;
+                    return Marshal.PtrToStringUni(message);
                 }
 
-                return Marshal.PtrToStringUni(returnValue);
+                // Execute promise tasks stored in taskQueue 
+                while (taskQueue.Count != 0)
+                {
+                    JavaScriptValue task = (JavaScriptValue)taskQueue.Dequeue();
+                    JavaScriptValue promiseResult;
+                    JavaScriptValue global;
+                    Native.JsGetGlobalObject(out global);
+                    JavaScriptValue[] args = new JavaScriptValue[1] { global };
+                    Native.JsCallFunction(task, args, 1, out promiseResult);
+                }
+
+                // Convert the return value.
+                JavaScriptValue stringResult;
+                UIntPtr stringLength;
+                if (Native.JsConvertValueToString(result, out stringResult) != JavaScriptErrorCode.NoError)
+                    return "failed to convert value to string.";
+                if (Native.JsStringToPointer(stringResult, out returnValue, out stringLength) != JavaScriptErrorCode.NoError)
+                    return "failed to convert return value.";
             }
+            catch (Exception e)
+            {
+                return "chakrahost: fatal error: internal error: " + e.Message;
+            }
+
+            return Marshal.PtrToStringUni(returnValue);
         }
     }
+}
